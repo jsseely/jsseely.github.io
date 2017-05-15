@@ -1,6 +1,6 @@
-# henrik.nyh.se
+# jsseely.github.io
 
-Static HTML site.
+Static HTML site. Modified from https://github.com/henrik/henrik.nyh.se.
 
 
 ## Development
