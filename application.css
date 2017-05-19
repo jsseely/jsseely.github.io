@@ -529,7 +529,7 @@ body {
   }
 }
 .profile {
-  margin-bottom: 12px;
+  margin-bottom: 6px;
 }
 
 .elsewhere {
@@ -548,7 +548,7 @@ h1 {
 }
 
 h2 {
-  margin-top: 50px;
+  margin-top: 60px;
   font: 300 22px/1.5 "Source Sans Pro", sans-serif;
 }
 
@@ -590,6 +590,12 @@ a:hover, a:focus {
 .elsewhere__item {
   display: inline;
   margin: 0 10px;
+}
+.elsewhere__itemmono {
+  display: inline;
+  margin: 0 10px;
+  font: 12px/1.5 "Source Code Pro", monospace;
+  letter-spacing: 1.25px;
 }
 
 /*# sourceMappingURL=application.css.map */
