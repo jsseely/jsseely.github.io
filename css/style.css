@@ -355,7 +355,7 @@ body {
     font-size: 1em;
     line-height: 1.6;
     text-shadow: 1px 1px 1px #fff;
-    font: 200 16px/1.5 "Source Sans Pro", sans-serif;
+    font: 200 18px/1.5 "Source Sans Pro", sans-serif;
 }
 
 code {
@@ -393,7 +393,7 @@ a:hover, a:focus {
 
 
 ul {
-    list-style-type: disc;
+    list-style-type: circle;
     padding-left: 1em;
     margin: 1em 0;
 }
