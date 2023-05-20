@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-501N4WR52H"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-501N4WR52H');
+    </script>
+
+    <meta charset="UTF-8">
+    <title>Jeffrey S. Seely</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="...">
+
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎈</text></svg>">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@300;400&family=Source+Sans+Pro:wght@300;400&family=Source+Serif+4:wght@300;400&family=Source+Serif+Pro:wght@300;400&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.7/dist/katex.min.css" integrity="sha384-3UiQGuEI4TTMaFmGIZumfRPtfKQ3trwQE2JgosJxCnGmQpL/lJdjpcHkaaFwHlcI" crossorigin="anonymous">
+
+    
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.7/dist/katex.min.js" integrity="sha384-G0zcxDFp5LWZtDuRMnBkk3EphCK1lhEf4UEyEM693ka574TZGwo4IWwS6QLzM/2t" crossorigin="anonymous"></script>
+
+    
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.7/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"
+        onload="renderMathInElement(document.body);"></script>
+</head>
+<body>
+
+    <div class="container">
+        <h1>State-space and autoregressive models</h1>
+        <!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>A linear state-space model can be converted to a linear autoregressive model and vice-versa.</p>
+<p>In this note we derive these equivalences:</p>
+<ul>
+<li>From state-space to AR</li>
+<li>From AR to state-space</li>
+</ul>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p><img src="https://github.com/jsseely/jsseely.github.io/assets/7425776/aad14440-4286-44d8-a049-51407c15bbb0.png" alt="image"></p>
+<h2 id="state-space-model">State-space model</h2>
+<p>A linear discrete-time state-space model is given by</p>
+<p>\begin{align}
+x(t+1) &amp;= Ax(t) + Bu(t) \\
+y(t) &amp;= Cx(t) + Du(t)
+\end{align}</p>
+<p>where</p>
+<ul>
+<li>$u\in\mathbb{R}^m$ is the <strong>input</strong></li>
+<li>$x\in\mathbb{R}^n$ is the <strong>state</strong></li>
+<li>$y\in\mathbb{R}^p$ is the <strong>output</strong></li>
+</ul>
+<p>The matrices $A, B, C$ and $D$ are of appropriate dimension.</p>
+<h2 id="autoregressive-model">Autoregressive model</h2>
+<p>An <strong>$n$-th order autoregressive model</strong> is one where the current output $y(t)$ depends on the past $n$ outputs.</p>
+<p>\begin{align}
+y(t) = \sum_{i=1}^n \alpha_iy(t-i)
+\end{align}</p>
+<p>where $\alpha_i\in\mathbb{R}^{p\times p}$.</p>
+<p>An <strong>autoregressive with external inputs</strong> (sometimes called <strong>ARX</strong>) model also depends on the <em>current and past</em> inputs $u(t)$.</p>
+<p>\begin{align}
+y(t) = \sum_{i=1}^n \alpha_iy(t-i) + \sum_{i=0}^n \beta_iu(t-i)
+\end{align}</p>
+<p>where $\beta_i\in\mathbb{R}^{p\times m}$. (Note the index ranges)</p>
+<h2 id="from-state-space-to-autoregressive">From state-space to autoregressive</h2>
+<ul>
+<li>State-space equations are <strong>order 1 differences</strong> and contain an internal state.</li>
+<li>ARX equations are <strong>higher order differences</strong> and contain no state.</li>
+</ul>
+<p><strong>Goal:</strong> Convert state-space equations $(1)$-$(2)$ to ARX equations $(4)$.</p>
+<h3 id="step-1-rewrite-state-space-equations-in-terms-of-shift-operator">Step 1: Rewrite state-space equations in terms of shift operator</h3>
+<p>The shift operator $q$ advances a signal by one time step, so $qx(t) = x(t+1)$. Rewrite the state-space equations treating $q$ as a variable:</p>
+<p>\begin{align}
+x(t+1) = qx(t) &amp;= Ax(t) + Bu(t)
+\end{align}</p>
+<p>implies,
+\begin{align}
+x(t) &amp;= (qI-A)^{-1}Bu(t)
+\end{align}</p>
+<p>The end goal is to get the autoregressive equation but with each $y(t+i)$  replaced with $q^{i}y(t)$, so we want powers of $q$ (higher order shifts) to pop out of our derivations.</p>
+<p>Continuing, we have</p>
+<p>\begin{align}
+y(t) &amp;= \left(C(qI-A)^{-1}B + D \right)u(t) \\
+y(t) &amp;= H(q)u(t)
+\end{align}</p>
+<p>Where $H(q)$ is the <strong>transfer function</strong>.</p>
+<h3 id="step-2-determine-hq">Step 2: Determine $H(q)$</h3>
+<p>In $H(q)$ we have a matrix inverse term $(qI-A)^{-1}$. We start by noting that a matrix inverse is a ratio of its <a href="https://en.wikipedia.org/wiki/Adjugate_matrix">adjugate</a> and determinant:</p>
+<p>\begin{equation}
+M^{-1} = \frac{\operatorname{adj}(M)}{\operatorname{det}(M)}
+\end{equation}</p>
+<p>so we can write the transfer function as</p>
+<p>\begin{equation}
+H(q) = \frac{C\operatorname{adj}(qI-A)B + D\operatorname{det}(qI-A)}{\operatorname{det}(qI-A)}
+\end{equation}</p>
+<p>For the adjugate and determinant, let&rsquo;s spell out the formulae in the $n=2$ case:</p>
+<p>\begin{align}
+\text{adj}(qI - A) &amp;= \begin{bmatrix} q-a_{22} &amp; -a_{12} \\ -a_{21} &amp; q-a_{11} \end{bmatrix}, \\ \text{det}(qI - A) &amp;= (q-a_{11})(q-a_{22}) - (q-a_{12})(q-a_{21})
+\end{align}</p>
+<p>Plug these into the equation for $H(q)$ and re-arrange all terms. You find each entry of the matrix $H(q)$ is a quotient of two 2nd order polynomials of $q$.</p>
+<p>In general each entry of the adjugate is a determinate of a $n-1 \times n-1$ submatrix of $qI-A$ so the observation holds that each entry of $H(q)$ is a quotient of two $n$th order polynomials of $q$, namely,
+\begin{align}
+H_{i,j}(q) = \frac{F_{i,j}(q)}{G(q)}
+\end{align}</p>
+<p>where each $F_{ij}$ and $G(q)$ are all $n$th order polynomials.
+\begin{align}
+F_{ij}(q)=\sum_{p=0}^n f_{ij,p}q^p, &amp; &amp; G(q) = \sum_{p=0}^n g_p q^p
+\end{align}</p>
+<p>where $f_{ij,p}, g_p\in\mathbb{R}$ are the coefficients.</p>
+<p>Although we&rsquo;re writing the coefficients as $f$ and $g$, they are uniquely determined by the original $A,B,C,D$ parameters. You calculate &ldquo;by hand&rdquo; the adjugate and determinant step to get $f$ and $g$ in terms of the original parameters but there is not a notationally friendly way to do so for general $n$. It suffices to know this can be done.</p>
+<h3 id="step-3-re-arrange-and-apply-qi-operators-to-the-signal">Step 3: Re-arrange and apply $q^i$ operators to the signal</h3>
+<p>Now, we can finally write</p>
+<p>\begin{align}
+y_i(t) = \sum_{j=1}^m\frac{F_{ij}(q)}{G(q)}u_j(t)
+\end{align}</p>
+<p>It&rsquo;s custom to set $g_n=1$ (if not, factor out $g_n$ and absorb into the numerator coefficients), thus,</p>
+<p>\begin{align}
+y_i(t+n) = \sum_{j=1}^m\sum_{p=0}^n f_{ij,p}u_j(t+p) - \sum_{p=0}^{n-1}g_py_i(t+p)
+\end{align}</p>
+<p>Which is our desired ARX model.</p>
+<p>Often we consider the single-input-single-output SISO case ($p=m=1$) for simplicity:</p>
+<p>\begin{align}
+y(t+n) = \sum_{p=0}^n f_pu(t+p) - \sum_{p=1}^{n-1}g_py(t+p)
+\end{align}</p>
+<p>Notes:</p>
+<ul>
+<li>The zeros of the polynomials $F$ and $G$ are known as the zeros and poles of $H$, respectively. Poles and zeros might cancel.</li>
+<li>The poles of $H$ (zeros of $G$) are the eigenvalues of $A$. Note the relation to the characteristic polynomial.</li>
+<li>Each input-output pair (as in entries of vectors of $u$ and $y$) contain a unique $F$ (zeros), but share the same $G$ (poles).</li>
+</ul>
+<h2 id="from-autoregressive-to-state-space">From autoregressive to state-space</h2>
+<h2 id="relation-to-z-transform">Relation to z-transform</h2>
+<p>The discrete-time analog of the Laplace transform is the <a href="https://en.wikipedia.org/wiki/Z-transform">Z-transform</a>:</p>
+<p>\begin{align}
+\mathcal{Z}(x(t)) = X(z) = \sum_{i=0}^\infty x(t)z^{-n}
+\end{align}</p>
+<p>The z-transform converts a time-domain signal to a $\mathbb{C}$-domain function.</p>
+<p>Note the effect of taking the $z$-transform of a shifted signal: $\mathcal{Z}(x(t+1)) = zX(z)$. This means we can redo the entire derivation with $z$ inplace of $q$ above and have $Y(z) = H(z)U(z)$, where $H(z)$ is also called the <strong>transfer function</strong> and has the exact same form as $H(q)$ above, but with $z$ in place of $q$.</p>
+
+    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            renderMathInElement(document.body, {
+                delimiters: [
+                    {left: "$$", right: "$$", display: true},
+                    {left: "$", right: "$", display: false}
+                ]
+            });
+        });
+    </script>
+</body>
+</html>

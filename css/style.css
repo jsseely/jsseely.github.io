@@ -353,27 +353,29 @@ body {
     background-color: #fbfbf9;
     color: #1c1c00; /* updated color */
     font-size: 1em;
-    line-height: 1.6;
-    text-shadow: 1px 1px 1px #fff;
-    font: 200 18px/1.5 "Source Sans Pro", sans-serif;
+    line-height: 1.8;
+    /* text-shadow: 1px 1px 1px #fff; */
+    font: 300 18px/1.6 "Source Serif 4", sans-serif;
 }
 
 code {
-    font: 200 14px/1.5 "Source Code Pro";
+    font: 300 18px/1.6 "Source Code Pro";
 }
 
 h1 {
-  font: 300 28px/1.5 "Source Sans Pro", sans-serif;
+  text-shadow: 1px 1px 1px #fff;
+  font: 400 28px/1.5 "Source Serif Pro", sans-serif;
 }
 
 h2 {
+  text-shadow: 1px 1px 1px #fff;
   margin-top: 60px;
-  font: 300 22px/1.5 "Source Sans Pro", sans-serif;
+  font: 400 22px/1.5 "Source Serif Pro", sans-serif;
 }
 
 h3 {
     margin-top: 60px;
-    font: 300 22px/1.5 "Source Sans Pro", sans-serif;
+    font: 400 22px/1.5 "Source Serif Pro", sans-serif;
 }
   
   
@@ -403,7 +405,8 @@ li {
 }
 
 .container {
-    max-width: 38rem;
+    /* max-width: 38rem; */
+    max-width: 50rem;
     padding: 2em 1em;
     margin: 0 auto;
 }
