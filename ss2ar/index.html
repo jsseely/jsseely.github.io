@@ -35,116 +35,63 @@
 <body>
 
     <div class="container">
-        <h1>State-space and autoregressive models</h1>
-        <!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<p>A linear state-space model can be converted to a linear autoregressive model and vice-versa.</p>
-<p>In this note we derive these equivalences:</p>
-<ul>
-<li>From state-space to AR</li>
-<li>From AR to state-space</li>
-</ul>
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<p><img src="https://github.com/jsseely/jsseely.github.io/assets/7425776/aad14440-4286-44d8-a049-51407c15bbb0.png" alt="image"></p>
-<h2 id="state-space-model">State-space model</h2>
-<p>A linear discrete-time state-space model is given by</p>
+        <h1>Equivalence of Linear State-Space and Autoregressive Models</h1>
+        <p>Linear state-space models can be converted to linear autoregressive models and vice versa. This note derives these equivalence.</p>
+<p>The line of work around the <a href="https://hazyresearch.stanford.edu/blog/2022-06-11-simplifying-s4">S4 paper</a>, the <a href="https://arxiv.org/abs/2302.10866">Hyena Heirarchy</a>,  any other related papers, has brought to attention (to the ML world) the equivalence of (linear) state-space and convolution models. There&rsquo;s also an equivalence to <em>autoregressive</em> models. The derivation is a bit more opaque; many texts rely on the Z-transform, but the derivation can understood via shift operators instead. We show this below.</p>
+<p><img src="https://github.com/jsseely/jsseely.github.io/assets/7425776/0e8d39c6-28b3-4c4d-a0d5-454babd6a9d5" alt="state-space and autoregressive model"></p>
+<h2 id="state-space-model">State-Space Model</h2>
+<p>A linear discrete-time state-space model is represented by:</p>
 <p>\begin{align}
 x(t+1) &amp;= Ax(t) + Bu(t) \\
 y(t) &amp;= Cx(t) + Du(t)
 \end{align}</p>
-<p>where</p>
-<ul>
-<li>$u\in\mathbb{R}^m$ is the <strong>input</strong></li>
-<li>$x\in\mathbb{R}^n$ is the <strong>state</strong></li>
-<li>$y\in\mathbb{R}^p$ is the <strong>output</strong></li>
-</ul>
-<p>The matrices $A, B, C$ and $D$ are of appropriate dimension.</p>
-<h2 id="autoregressive-model">Autoregressive model</h2>
-<p>An <strong>$n$-th order autoregressive model</strong> is one where the current output $y(t)$ depends on the past $n$ outputs.</p>
+<p>where $u\in\mathbb{R}^m$ is the input, $x\in\mathbb{R}^n$ is the state, and $y\in\mathbb{R}^p$ is the output. The matrices $A, B, C,$ and $D$ are of appropriate dimensions.</p>
+<h2 id="autoregressive-model">Autoregressive Model</h2>
+<p>An $n$-th order autoregressive model is one where the current output $y(t)$ depends on the past $n$ outputs.</p>
 <p>\begin{align}
 y(t) = \sum_{i=1}^n \alpha_iy(t-i)
 \end{align}</p>
 <p>where $\alpha_i\in\mathbb{R}^{p\times p}$.</p>
-<p>An <strong>autoregressive with external inputs</strong> (sometimes called <strong>ARX</strong>) model also depends on the <em>current and past</em> inputs $u(t)$.</p>
+<p>An autoregressive model with external inputs (also known as <strong>ARX</strong>) also depends on the current and past inputs $u(t)$.</p>
 <p>\begin{align}
-y(t) = \sum_{i=1}^n \alpha_iy(t-i) + \sum_{i=0}^n \beta_iu(t-i)
+y(t) = \sum_{i=1}^n \alpha_iy(t-i) + \sum_{j=0}^n \beta_ju(t-j)
 \end{align}</p>
-<p>where $\beta_i\in\mathbb{R}^{p\times m}$. (Note the index ranges)</p>
-<h2 id="from-state-space-to-autoregressive">From state-space to autoregressive</h2>
-<ul>
-<li>State-space equations are <strong>order 1 differences</strong> and contain an internal state.</li>
-<li>ARX equations are <strong>higher order differences</strong> and contain no state.</li>
-</ul>
-<p><strong>Goal:</strong> Convert state-space equations $(1)$-$(2)$ to ARX equations $(4)$.</p>
-<h3 id="step-1-rewrite-state-space-equations-in-terms-of-shift-operator">Step 1: Rewrite state-space equations in terms of shift operator</h3>
-<p>The shift operator $q$ advances a signal by one time step, so $qx(t) = x(t+1)$. Rewrite the state-space equations treating $q$ as a variable:</p>
+<p>where $\beta_j\in\mathbb{R}^{p\times m}$. (Note the index ranges)</p>
+<h2 id="conversion-from-state-space-to-autoregressive">Conversion: From State-Space to Autoregressive</h2>
+<p>The goal is to convert state-space equations to ARX equations.</p>
+<h3 id="step-1-rewrite-state-space-equations-in-terms-of-shift-operator">Step 1: Rewrite State-Space Equations in Terms of Shift Operator</h3>
+<p>The shift operator $q$ advances a signal by one time step, so $qx(t) = x(t+1)$. Rewrite the state-space equations treating $q$ as a variable. We get:</p>
 <p>\begin{align}
 x(t+1) = qx(t) &amp;= Ax(t) + Bu(t)
-\end{align}</p>
-<p>implies,
+\end{align}
+i.e.,
 \begin{align}
 x(t) &amp;= (qI-A)^{-1}Bu(t)
 \end{align}</p>
-<p>The end goal is to get the autoregressive equation but with each $y(t+i)$  replaced with $q^{i}y(t)$, so we want powers of $q$ (higher order shifts) to pop out of our derivations.</p>
-<p>Continuing, we have</p>
+<p>Continuing this derivation, we obtain:</p>
 <p>\begin{align}
 y(t) &amp;= \left(C(qI-A)^{-1}B + D \right)u(t) \\
 y(t) &amp;= H(q)u(t)
 \end{align}</p>
-<p>Where $H(q)$ is the <strong>transfer function</strong>.</p>
+<p>where $H(q)$ is the <strong>transfer function</strong>. These algebraic maniputations are valid if $(qI-A)^{-1}$ (an operator) is boundedly invertible and if $u(t)$ is bounded for all $t$.</p>
 <h3 id="step-2-determine-hq">Step 2: Determine $H(q)$</h3>
-<p>In $H(q)$ we have a matrix inverse term $(qI-A)^{-1}$. We start by noting that a matrix inverse is a ratio of its <a href="https://en.wikipedia.org/wiki/Adjugate_matrix">adjugate</a> and determinant:</p>
-<p>\begin{equation}
-M^{-1} = \frac{\operatorname{adj}(M)}{\operatorname{det}(M)}
-\end{equation}</p>
-<p>so we can write the transfer function as</p>
+<p>In $H(q)$ we have a inverse term $(qI-A)^{-1}$. We start by noting that a matrix inverse is a ratio of its <a href="https://en.wikipedia.org/wiki/Adjugate_matrix">adjugate</a> and determinant, thus</p>
 <p>\begin{equation}
 H(q) = \frac{C\operatorname{adj}(qI-A)B + D\operatorname{det}(qI-A)}{\operatorname{det}(qI-A)}
 \end{equation}</p>
-<p>For the adjugate and determinant, let&rsquo;s spell out the formulae in the $n=2$ case:</p>
-<p>\begin{align}
-\text{adj}(qI - A) &amp;= \begin{bmatrix} q-a_{22} &amp; -a_{12} \\ -a_{21} &amp; q-a_{11} \end{bmatrix}, \\ \text{det}(qI - A) &amp;= (q-a_{11})(q-a_{22}) - (q-a_{12})(q-a_{21})
-\end{align}</p>
-<p>Plug these into the equation for $H(q)$ and re-arrange all terms. You find each entry of the matrix $H(q)$ is a quotient of two 2nd order polynomials of $q$.</p>
-<p>In general each entry of the adjugate is a determinate of a $n-1 \times n-1$ submatrix of $qI-A$ so the observation holds that each entry of $H(q)$ is a quotient of two $n$th order polynomials of $q$, namely,
-\begin{align}
-H_{i,j}(q) = \frac{F_{i,j}(q)}{G(q)}
-\end{align}</p>
-<p>where each $F_{ij}$ and $G(q)$ are all $n$th order polynomials.
-\begin{align}
-F_{ij}(q)=\sum_{p=0}^n f_{ij,p}q^p, &amp; &amp; G(q) = \sum_{p=0}^n g_p q^p
-\end{align}</p>
-<p>where $f_{ij,p}, g_p\in\mathbb{R}$ are the coefficients.</p>
-<p>Although we&rsquo;re writing the coefficients as $f$ and $g$, they are uniquely determined by the original $A,B,C,D$ parameters. You calculate &ldquo;by hand&rdquo; the adjugate and determinant step to get $f$ and $g$ in terms of the original parameters but there is not a notationally friendly way to do so for general $n$. It suffices to know this can be done.</p>
-<h3 id="step-3-re-arrange-and-apply-qi-operators-to-the-signal">Step 3: Re-arrange and apply $q^i$ operators to the signal</h3>
-<p>Now, we can finally write</p>
-<p>\begin{align}
-y_i(t) = \sum_{j=1}^m\frac{F_{ij}(q)}{G(q)}u_j(t)
-\end{align}</p>
-<p>It&rsquo;s custom to set $g_n=1$ (if not, factor out $g_n$ and absorb into the numerator coefficients), thus,</p>
-<p>\begin{align}
-y_i(t+n) = \sum_{j=1}^m\sum_{p=0}^n f_{ij,p}u_j(t+p) - \sum_{p=0}^{n-1}g_py_i(t+p)
-\end{align}</p>
-<p>Which is our desired ARX model.</p>
-<p>Often we consider the single-input-single-output SISO case ($p=m=1$) for simplicity:</p>
+<p>By applying the <a href="https://en.wikipedia.org/wiki/Adjugate_matrix">adjugate</a> and <a href="https://en.wikipedia.org/wiki/Determinant">determinant</a> formulas, each entry of the matrix $H(q)$ can be shown to be a quotient of two 2nd order polynomials of $q$. In particular, they are proper rational functions of $q$ &mdash; the order of the numerator is less than or equal to the order of the denominator.</p>
+<h3 id="step-3-re-arrange-and-apply-qi-operators-to-the-signal">Step 3: Re-arrange and Apply $q^i$ Operators to the Signal</h3>
+<p>Each entry of $H(q)$ shares the same denominator but different numerators. For notational simplicity we assume $p=m=1$ (single-input, single-output). We can now re-arrange and apply higher-order shifts $q^i$s to obtain the autoregressive equation as:</p>
 <p>\begin{align}
 y(t+n) = \sum_{p=0}^n f_pu(t+p) - \sum_{p=1}^{n-1}g_py(t+p)
 \end{align}</p>
-<p>Notes:</p>
-<ul>
-<li>The zeros of the polynomials $F$ and $G$ are known as the zeros and poles of $H$, respectively. Poles and zeros might cancel.</li>
-<li>The poles of $H$ (zeros of $G$) are the eigenvalues of $A$. Note the relation to the characteristic polynomial.</li>
-<li>Each input-output pair (as in entries of vectors of $u$ and $y$) contain a unique $F$ (zeros), but share the same $G$ (poles).</li>
-</ul>
-<h2 id="from-autoregressive-to-state-space">From autoregressive to state-space</h2>
-<h2 id="relation-to-z-transform">Relation to z-transform</h2>
-<p>The discrete-time analog of the Laplace transform is the <a href="https://en.wikipedia.org/wiki/Z-transform">Z-transform</a>:</p>
-<p>\begin{align}
-\mathcal{Z}(x(t)) = X(z) = \sum_{i=0}^\infty x(t)z^{-n}
-\end{align}</p>
-<p>The z-transform converts a time-domain signal to a $\mathbb{C}$-domain function.</p>
-<p>Note the effect of taking the $z$-transform of a shifted signal: $\mathcal{Z}(x(t+1)) = zX(z)$. This means we can redo the entire derivation with $z$ inplace of $q$ above and have $Y(z) = H(z)U(z)$, where $H(z)$ is also called the <strong>transfer function</strong> and has the exact same form as $H(q)$ above, but with $z$ in place of $q$.</p>
+<p>The coefficients $f_p,g_p\in\mathbb{R}$ can be expressed in terms of the state-space parameters $A,B,C,D$. The exact expressions can be obtained by applying the adjugate and determinant formulas.</p>
+<h2 id="conversion-from-autoregressive-to-state-space">Conversion: From Autoregressive to State-Space</h2>
+<p>Converting an autoregressive model to a state-space model is called the <strong>realization problem</strong>. Since we can apply similarity transforms to the state without affecting input-output behavior we know that there are infinitely many realizations of a given autoregressive model. One can choose a <a href="https://en.wikipedia.org/wiki/Realization_(systems)#Canonical_realizations">canonical realization</a>.</p>
+<h2 id="relation-to-z-transform">Relation to Z-Transform</h2>
+<p>The discrete-time analog of the Laplace transform is the <a href="https://en.wikipedia.org/wiki/Z-transform">Z-transform</a>, which converts a time-domain signal to a function in the complex number domain. The Z-transform of a shifted signal is represented as $\mathcal{Z}(x(t+1)) = zX(z)$. The entire derivation process above can be redone with $z$ in place of $q$, yielding $Y(z) = H(z)U(z)$, where $H(z)$ is also the transfer function.</p>
+<h2 id="references">References</h2>
+<p>[1] Verhaegen, M., &amp; Verdult, V. (2007). Filtering and system identification: A least squares approach. Cambridge University Press.</p>
 
     </div>
     <script>

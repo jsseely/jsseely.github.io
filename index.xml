@@ -8,17 +8,13 @@
     <language>en-us</language>
     <lastBuildDate>Wed, 17 May 2023 15:04:48 +0800</lastBuildDate><atom:link href="https://jsseely.github.io/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>State-space and autoregressive models</title>
+      <title>Equivalence of Linear State-Space and Autoregressive Models</title>
       <link>https://jsseely.github.io/ss2ar/</link>
       <pubDate>Wed, 17 May 2023 15:04:48 +0800</pubDate>
       
       <guid>https://jsseely.github.io/ss2ar/</guid>
-      <description>A linear state-space model can be converted to a linear autoregressive model and vice-versa.
-In this note we derive these equivalences:
-From state-space to AR From AR to state-space State-space model A linear discrete-time state-space model is given by
-\begin{align} x(t+1) &amp;amp;= Ax(t) + Bu(t) \\ y(t) &amp;amp;= Cx(t) + Du(t) \end{align}
-where
-$u\in\mathbb{R}^m$ is the input $x\in\mathbb{R}^n$ is the state $y\in\mathbb{R}^p$ is the output The matrices $A, B, C$ and $D$ are of appropriate dimension.</description>
+      <description>Linear state-space models can be converted to linear autoregressive models and vice versa. This note derives these equivalence.
+The line of work around the S4 paper, the Hyena Heirarchy, any other related papers, has brought to attention (to the ML world) the equivalence of (linear) state-space and convolution models. There&amp;rsquo;s also an equivalence to autoregressive models. The derivation is a bit more opaque; many texts rely on the Z-transform, but the derivation can understood via shift operators instead.</description>
     </item>
     
   </channel>
