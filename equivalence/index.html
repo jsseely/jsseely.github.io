@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-501N4WR52H"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-501N4WR52H');
+    </script>
+
+    <meta charset="UTF-8">
+    <title>Jeffrey S. Seely</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="...">
+
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎈</text></svg>">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@300;400&family=Source+Sans+Pro:wght@300;400&family=Source+Serif+4:wght@300;400&family=Source+Serif+Pro:wght@300;400&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.7/dist/katex.min.css" integrity="sha384-3UiQGuEI4TTMaFmGIZumfRPtfKQ3trwQE2JgosJxCnGmQpL/lJdjpcHkaaFwHlcI" crossorigin="anonymous">
+
+    
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.7/dist/katex.min.js" integrity="sha384-G0zcxDFp5LWZtDuRMnBkk3EphCK1lhEf4UEyEM693ka574TZGwo4IWwS6QLzM/2t" crossorigin="anonymous"></script>
+
+    
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.7/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"
+        onload="renderMathInElement(document.body);"></script>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Spelling Out the Equivalence of RNNs, CNNs, and Autoregressive Models in the Linear Case</h1>
+        <p>This note spells out the equivalence of convolution, state-space, and autoregressive architectures in the linear case. We summarize the different <em>representations</em> of a linear dynamical system, and parameter conversions between them. This is a well-known exercise in engineering but seemingly less-known in machine learning. This note may be a useful exercise to anyone wanting to improve their intuition for sequence modeling in general, or make sense of the RNN vs CNN vs AR architecture debates in ML.</p>
+<h2 id="linear-sequence-modeling-architectures">Linear sequence modeling: architectures</h2>
+<p><img src="/images/archs.png" alt="LTI Architectures"></p>
+<p>Suppose we have a sequence of inputs $u(t)\in\mathbb{R}^m$ and outputs $y(t)\in\mathbb{R}^p$ indexed by time $t\in\mathbb{Z}$.</p>
+<p>Consider the three main architectures or computational graphs for modeling of the current $y(t)$.</p>
+<ul>
+<li><strong>Convolutional</strong>: $y(t)$ depends on current and past inputs $u(t), u(t-1), u(t-2), \dots$</li>
+<li><strong>Autoregressive</strong>: $y(t)$ depends on past outputs $y(t-1), y(t-2), \dots, y(t-T)$</li>
+<li><strong>State-space</strong>: $y(t)$ depends on state variable $x(t)$ which in turn depends only on current input $u(t)$ and previous state $x(t-1)$.</li>
+</ul>
+<p>These appear qualitatively very different. But in the linear case they&rsquo;re equally expressive and we can convert between them so are in a sense all equivalent.</p>
+<h2 id="equivalence-of-architectures">Equivalence of Architectures</h2>
+<p>More generally consider the family of all possible input-output relationships that map a sequence of $m$-dimensional input vectors to a sequence of $p$-dimensional output vectors. In the case where the relationship is linear we can write $y(i) = \sum_{j=-\infty}^\infty h(i,j) u(j)$ where $h(i,j)\in\mathbb{R}^{p\times m}$.</p>
+<p>A <strong>linear time-invariant (LTI) dynamical system</strong> is the case where the two conditions are met</p>
+<ul>
+<li><strong>Causality</strong>: $h(i,j)=0$ for $i&gt;j$</li>
+<li><strong>Time-invariance</strong>: $h(i,j)=h(i-j, 0):=h(t)$ (i.e. $h$ only depends on time difference $t=i-j$ so just write $h(t)$)</li>
+</ul>
+<p>When the LTI conditions are met, we can instantiate this input-putput mapping as any of convolution, autoregressive, or state-space architectures. Further, any given linear convolution, autoregressive, or state-space architecture can be converted into either of the other.</p>
+<h2 id="lti-representations">LTI Representations</h2>
+<p><img src="/images/ltireps.png" alt="linear systems representations"></p>
+<!-- raw HTML omitted -->
+<p>More generally, there are six standard representations of a linear time-invariant dynamical system in discrete time (figure from [1]).</p>
+<p><strong>Architecture representations</strong>:</p>
+<ol>
+<li>State-space (&ldquo;linear RNN&rdquo;)</li>
+<li>Impulse response / convolution</li>
+<li>Autoregressive / difference equations</li>
+</ol>
+<p><strong>Transfer Function representations</strong>:</p>
+<ol start="4">
+<li>Transfer function $H(q)$ of shift operator $q$</li>
+<li>$z$-Transform transfer function $H(z)$ of complex variable $z$</li>
+<li>DFTF transfer function $H(\omega)$ of complex variable $\omega$</li>
+</ol>
+<p>Let&rsquo;s go through each.</p>
+<h3 id="1-state-space">1. State-Space</h3>
+<p>The State-space representation is parametrized by matrices $A,B,C,D$. A.k.a. <strong>a linear RNN</strong>.</p>
+<p>\begin{align}
+x(t+1) = Ax(t) + Bu(t) \\
+y(t) = Cx(t) + Du(t)
+\end{align}</p>
+<h3 id="2-convolution--impulse-response">2. Convolution / Impulse-Response</h3>
+<p>The convolution (or impulse-response) representation is given by
+\begin{align}
+y(t) = h(t) \ast u(t)
+\end{align}</p>
+<p>Where $\ast$ represents a discrete convolution and $h(t)$ is a $p\times m$ matrix that varies with $t$.</p>
+<p>Given a state-space representation, and assuming $x(0)=0$, we can solve the recurrance equation:
+\begin{align}
+y(t) = \sum_{i=1}^\infty CA^{i-1} B u(t-i) + Du(t)
+\end{align}</p>
+<p>Which implies the convolution parameters are
+\begin{align}
+h(t) = \begin{cases}
+D &amp; t=0 \\
+CA^{t-1}B &amp; t \geq 1
+\end{cases}
+\end{align}
+The convolution has infinite receptive field but finite parameters. The &ldquo;weights&rdquo; are parametrized by $t$.</p>
+<p>In the case that $A$ is <a href="https://en.wikipedia.org/wiki/Nilpotent_matrix">nilpotent</a> then $h(t)$ does go to zero for large enough $t$ thus giving a finite receptive field but this is not common.</p>
+<p>Note that the $h(t)$ here is the same as the $h(t)$ introduced in the beginning.</p>
+<h3 id="3-autoregressive--difference-equation">3. Autoregressive / Difference Equation</h3>
+<p>We set $p=m=1$ in the following for notational compactness. The autoregressive representation is
+\begin{align}
+y(t) = \sum_{i=1}^n a_i y(t-i) + \sum_{i=0}^n b_i u(t-i)
+\end{align}</p>
+<p>where $a_i, b_i \in\mathbb{R}$. The output $y(t)$ depends on the past $n$ outputs. Wherease the state-space representations contains only first-order differences, the autoregressive representation is expressed in higher-order differences. The output $y(t)$ is also &ldquo;conditioned&rdquo; on the inputs here but we could omit this in the study of autonomous systems. Note that there are finite terms. The upper index $n$ is intentional because $n$ autoregressive terms corresponds to state-space models of state dimension $n$ which we will see later.</p>
+<h3 id="4-transfer-function-hq-of-shift-operator-q">4. Transfer function $H(q)$ of shift operator $q$</h3>
+<p>The shift operator $q$ shifts a signal as in $qx(t) = x(t+1)$.</p>
+<p>If we have a state-space model we can re-write the state-space equation using the shift operator:</p>
+<p>\begin{align}
+qx(t) &amp;= Ax(t) + Bu(t) \\
+x(t) &amp;= (qI - A)^{-1} Bu(t) \\
+\end{align}
+with output equation
+\begin{align}
+y(t) &amp;= (C(qI - A)^{-1} B + D)u(t) \\
+y(t) &amp;= H(q) u(t)
+\end{align}</p>
+<p>where $H(q)$ is the <strong>transfer function</strong>. It can be shown that $H(q)=C(qI-A)^{-1} B + D$ is a proper rational function of $q$. In the $p=m=1$ case, we write
+\begin{align}
+H(q) = \frac{b_n q^n + \dots + b_1 q + b_0}{a_n q^n + \dots + a_1 q + a_0}
+\end{align}</p>
+<p>This follows from the fact that an inverse matrix can be written as $(qI-A)^{-1}=\frac{\text{adj}(qI-A)}{\text{det}(qI-A)}$, which imply both numerator and denominator reduce to polynomials of $q$ of degree at most $n$. And exact values of the polynomial coefficients can be derived (painstakingly) from the <a href="https://en.wikipedia.org/wiki/Adjugate_matrix">adjugate</a> and determinant of the matrix $qI-A$.</p>
+<h4 id="from-hq-to-autoregressive">From H(q) to autoregressive</h4>
+<p>Given that $H(q)$ is a proper rational function of $q$, we can multiply both sides of $y(t) = H(q)u(t)$ by the denominator polynomial and apply shift operators $q^i$ to obtain the autoregressive representation.</p>
+<h4 id="from-hq-to-convolution">From H(q) to convolution</h4>
+<p>We can also note that the $(qI-A)^{-1}$ is the <a href="https://en.wikipedia.org/wiki/Resolvent_formalism">resolvent</a> of $A$ (but with $q$ instead of a complex variable). Reminding ourselves of <a href="https://en.wikipedia.org/wiki/Geometric_series">geometric series</a>, we can expand $(qI-A)^{-1}$ into an infinite series
+\begin{align}
+(qI-A)^{-1} &amp;= q(I - q^{-1}A)^{-1} \\
+&amp;= \sum_{i=0}^\infty q^{-i} A^i
+\end{align}
+(Since $q$ is an operator this is really a <a href="https://en.wikipedia.org/wiki/Neumann_series">Neumann series</a>). Since each $q^{-i}$ applies $i$ negative shifts, we can rewrite the transfer function representaiton as
+\begin{align}
+y(t) = H(q)u(t)
+y(t) = \sum_{i=1}^\infty CA^{i-1} B u(t-i) + Du(t)
+\end{align}</p>
+<!-- raw HTML omitted -->
+<p>which is consistent with the convolution representation from section 2. above, but it&rsquo;s interesting to see the $h(t)$ parameters emerge from a different angle.</p>
+<h3 id="5-transfer-function-hz-of-complex-variable-z">5. Transfer function $H(z)$ of complex variable $z$</h3>
+<p>Typically the above derivation is done in terms of the <a href="https://en.wikipedia.org/wiki/Z-transform">$z$-transform</a> instead of $q$. Nevertheless, the steps are essentially identical due to how the $z$-transform acts on shifts.</p>
+<p>If we apply the $z$-transform to the state-space equation we obtain
+\begin{align}
+X(z) = (zI - A)^{-1} BU(z)
+\end{align}
+where $X(z)$ and $U(z)$ are the $z$-transforms of $x(t)$ and $u(t)$.</p>
+<p>We get
+\begin{align}
+Y(z) &amp;= (C(zI - A)^{-1} B + D)U(z) \\
+&amp;= H(z) U(z)
+\end{align}</p>
+<p>Which is identical to the $H(q)$ but with complex variable $z$ in place of shift operator $q$.</p>
+<h3 id="6-dtft-representation">6. DTFT representation</h3>
+<p>For completeness we note that we can also take the DTFT
+\begin{align}
+Y(\omega) = H(\omega) U(\omega)
+\end{align}
+Where $Y(\omega)$ is the DTFT of $y(t)$ and is related to the $z$-transform via $z = e^{i\omega T}$. This allows us to define the <a href="https://en.wikipedia.org/wiki/Frequency_response">frequency response</a> of the system.</p>
+<h2 id="realization">Realization</h2>
+<p>To convert between any convolution or autoregressive representation to a state-space is called a <em>realization</em>. This is generally more involved but revolves around the construction of a <a href="https://en.wikipedia.org/wiki/Hankel_matrix">Hankel matrix</a>.</p>
+<p>Assume we are given the convolution parameters $h(t)$ and construct the Hankel matrix:
+\begin{align}
+\mathcal{H} = \begin{bmatrix}
+h(0) &amp; h(1) &amp; h(2) &amp; \dots &amp; h(n-1) \\
+h(1) &amp; h(2) &amp; h(3) &amp; \dots &amp; h(n) \\
+\vdots &amp; \vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
+h(n-1) &amp; h(n) &amp; h(n+1) &amp; \dots &amp; h(2n-2)
+\end{bmatrix}
+\end{align}</p>
+<p>We assume that $\mathcal{H}$ decomposes as</p>
+<p>\begin{align}
+\mathcal{H} = \begin{bmatrix} C \\ CA \\ \vdots \\ CA^{n-1} \end{bmatrix} \begin{bmatrix} B &amp; AB &amp; \dots &amp; A^{n-1}B \end{bmatrix}
+\end{align}</p>
+<p>The rank of $\mathcal{H}$ will be equal to $n$, the state dimension. So by taking the SVD of $\mathcal{H}$ we &ldquo;read out&rdquo; the $A,B,C$ matrices from the (top $n$) left singular vectors and (top $n$) right singular vectors accordingly. This defines system matrices up to a similarity transformation.</p>
+<p>If instead we are given an autoregressive model we can take its corresponding proper rational function into an infinite series to obtain the convolution parameters $h(t)$ then construct the Hankel matrix.</p>
+<p>We omitted many details, but this is the general idea. Realization is a large topic.</p>
+<h2 id="summary">Summary</h2>
+<p>We intentionally omit a number of details and rigor. The point is to give a scaffolding of these connections. The texts [1], [2], and [3] provide the best exposition on this topic that I&rsquo;ve been able to find. The setup here is mostly inspired by [1]. Stanford&rsquo;s <a href="https://ee263.stanford.edu/archive/">EE263</a> is also an excellent course for learning about LTI systems.</p>
+<p>Although each architecture is capable of representing the same input-output mapping (the same &ldquo;forward pass&rdquo;), they are distinct in terms of the number of parameters, parameter sensitivity, learning dynamics, etc. I.e. distinct &ldquo;backward passes&rdquo;.</p>
+<h2 id="references">References</h2>
+<p>[1] Verhaegen, M., &amp; Verdult, V. (2007). Filtering and system identification: A least squares approach. Cambridge University Press.</p>
+<p>[2] Antsaklis, P. J., &amp; Michel, A. N. (2007). A linear systems primer. Springer Science &amp; Business Media.</p>
+<p>[3] Antoulas, A. C. (2005). Approximation of large-scale dynamical systems. Society for Industrial and Applied Mathematics.</p>
+<p><a href="/">Back</a></p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+
+    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            renderMathInElement(document.body, {
+                delimiters: [
+                    {left: "$$", right: "$$", display: true},
+                    {left: "$", right: "$", display: false}
+                ]
+            });
+        });
+    </script>
+</body>
+</html>
