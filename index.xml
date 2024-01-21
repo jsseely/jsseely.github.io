@@ -8,12 +8,26 @@
     <language>en-us</language>
     <lastBuildDate>Wed, 17 May 2023 15:04:48 +0800</lastBuildDate><atom:link href="https://jsseely.github.io/index.xml" rel="self" type="application/rss+xml" />
     <item>
+      <title>Understanding Mamba and selective state-space models as bilinear control systems</title>
+      <link>https://jsseely.github.io/mamba/</link>
+      <pubDate>Sun, 21 Jan 2024 14:31:07 +0900</pubDate>
+      
+      <guid>https://jsseely.github.io/mamba/</guid>
+      <description>After reading the very nice Mamba paper I want to write down some thoughts on different ways of thinking about the selective SSM mechanism.
+Selective SSM A discrete-time state-space model:
+\begin{align} x(t+1) &amp;amp;= Ax(t) + Bu(t) \\ y(t) &amp;amp;= Cx(t) \end{align}
+where $x\in\mathbb{R}^n$, $u\in\mathbb{R}^m$, $y\in\mathbb{R}^p$. Matrices are of appropriate dimensions.
+The &amp;ldquo;selective SSM&amp;rdquo; says that $A$ and $B$ are functions of the input. If those functions are linear, then the most general form of a selective SSM would have $A$ and $B$ as,</description>
+    </item>
+    
+    <item>
       <title>Spelling Out the Equivalence of RNNs, CNNs, and Autoregressive Models in the Linear Case</title>
       <link>https://jsseely.github.io/equivalence/</link>
       <pubDate>Sun, 21 May 2023 15:47:51 +0800</pubDate>
       
       <guid>https://jsseely.github.io/equivalence/</guid>
-      <description>This note spells out the equivalence of convolution, state-space, and autoregressive architectures in the linear case. We summarize the different representations of a linear dynamical system, and parameter conversions between them. This is a well-known exercise in engineering but seemingly less-known in machine learning. This note may be a useful exercise to anyone wanting to improve their intuition for sequence modeling in general, or make sense of the RNN vs CNN vs AR architecture debates in ML.</description>
+      <description>This note spells out the equivalence of convolution, state-space, and autoregressive architectures for linear dynamical systems. This is a well-known exercise in engineering but less-known in machine learning. This exercise may be useful for improving intuition of sequence modeling in general, and for making sense of the RNN vs CNN vs AR architecture debates in ML.
+We have a sequence of inputs $u(t)\in\mathbb{R}^m$ and outputs $y(t)\in\mathbb{R}^p$ indexed by time $t\in\mathbb{Z}$.</description>
     </item>
     
     <item>

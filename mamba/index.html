@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-501N4WR52H"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-501N4WR52H');
+    </script>
+
+    <meta charset="UTF-8">
+    <title>Jeffrey S. Seely</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="...">
+
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎈</text></svg>">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@300;400&family=Source+Sans+Pro:wght@300;400&family=Source+Serif+4:wght@300;400&family=Source+Serif+Pro:wght@300;400&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.7/dist/katex.min.css" integrity="sha384-3UiQGuEI4TTMaFmGIZumfRPtfKQ3trwQE2JgosJxCnGmQpL/lJdjpcHkaaFwHlcI" crossorigin="anonymous">
+
+    
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.7/dist/katex.min.js" integrity="sha384-G0zcxDFp5LWZtDuRMnBkk3EphCK1lhEf4UEyEM693ka574TZGwo4IWwS6QLzM/2t" crossorigin="anonymous"></script>
+
+    
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.7/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"
+        onload="renderMathInElement(document.body);"></script>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Understanding Mamba and selective state-space models as bilinear control systems</h1>
+        <p>After reading the very nice <a href="https://arxiv.org/abs/2312.00752">Mamba paper</a> I want to write down some thoughts on different ways of thinking about the selective SSM mechanism.</p>
+<h2 id="selective-ssm">Selective SSM</h2>
+<p>A discrete-time state-space model:</p>
+<p>\begin{align}
+x(t+1) &amp;= Ax(t) + Bu(t) \\
+y(t) &amp;= Cx(t)
+\end{align}</p>
+<p>where $x\in\mathbb{R}^n$, $u\in\mathbb{R}^m$, $y\in\mathbb{R}^p$. Matrices are of appropriate dimensions.</p>
+<p>The &ldquo;selective SSM&rdquo; says that $A$ and $B$ are functions of the input. If those functions are linear, then the most general form of a selective SSM would have $A$ and $B$ as,</p>
+<p>\begin{align}
+A(u(t)) &amp;= \text {reshape} _{n^2 \rightarrow n \times n}(Qu(t)) \\
+B(u(t)) &amp;= \text {reshape} _{nm \rightarrow n \times m}(Ru(t))
+\end{align}</p>
+<p>where $Q\in\mathbb{R}^{n^2\times m}$ and $R\in\mathbb{R}^{nm\times m}$. The $\operatorname{reshape}$ operator is just a reshaping of the vector into a matrix and is linear.</p>
+<p>But the Mamba paper does a much simplified version which we outline below.</p>
+<h2 id="simplified-selective-ssm">Simplified selective SSM</h2>
+<p>The Mamba SSM simplifications:</p>
+<ul>
+<li>The matrix $B$ is $m\times 1$, so although it is a function of all input dimensions $u$, the result acts on only one coordinate at a time $u_i$.</li>
+<li>The matrix $C$ is $1\times n$.</li>
+<li>We have $m$-many different $A$s. One for each input coordinate.</li>
+<li>Further, each $A$ is real and diagonal.</li>
+</ul>
+<p>Here, instead of writing $m$-many different $A$s we can just write one big $A$ of size $nm\times nm$.</p>
+<p>So let&rsquo;s reset our notational workspace and rewrite the full selective SSM:</p>
+<p>\begin{align}
+x(t+1) &amp;= A(u(t))x(t) + (B(u(t))\otimes I_m)u(t) \\
+y(t) &amp;= (I_m\otimes C)x(t)
+\end{align}</p>
+<p>Or equivalently,</p>
+<p>\begin{align}
+x(t+1) &amp;= \operatorname{diag}(Qu(t)) x(t) + (Ru(t)\otimes I_m)u(t) \\
+y(t) &amp;= (I_m\otimes C)x(t)
+\end{align}</p>
+<p>Where,
+\begin{align}
+A(t) &amp;= \operatorname{diag}(Qu(t)) \\
+B(t) &amp;= Ru(t)
+\end{align}
+with $Q\in\mathbb{R}^{nm\times m}$ and $R\in\mathbb{R}^{n\times m}$. And $\otimes$ is the Kronecker product. And $p=m$, same dimensions of inputs as outputs.</p>
+<p>The point of writing out equations $(7)-(8)$ is to explicitly write $x(t+1)$ as a function of $x(t)$ and $u(t)$ without the intermediate $A$ and $B$ since $Q$ and $R$ are the real parameters of the system.</p>
+<p>For clarity, dimensions above are</p>
+<ul>
+<li>$A(t)\in\mathbb{R}^{nm\times nm}$</li>
+<li>$B(t)\in\mathbb{R}^{m\times 1}$,</li>
+<li>$(B(t)\otimes I_m)\in\mathbb{R}^{nm\times m}$</li>
+<li>$C\in \mathbb{R}^{m\times 1}$</li>
+<li>$(I_m\otimes C)\in\mathbb{R}^{m\times nm}$</li>
+</ul>
+<h2 id="example">Example</h2>
+<p>It&rsquo;s easier to see what&rsquo;s going on by looking at a single coordinate, say $x_1$. We have $mn$-many scalar state variables that are independent of each other.</p>
+<p>For notational simplicity let&rsquo;s assume $m=2$, just two input coordinates. And $n$ is arbitrary.</p>
+<p>Then the dynamics of $x_1(t)$ are:</p>
+<p>\begin{align}
+x_1(t+1) = p_{1,1}u_1(t)x_1(t) + p_{1,2}u_2(t)x_1(t) + q_{1,1}u_1^2(t) + q_{1,2}u_1(t)u_2(t)
+\end{align}</p>
+<p>Writing it in this way makes it clear that we&rsquo;re far from LTI land:</p>
+<ul>
+<li>We have no autonomous terms consisting only of $x_i(t)$s</li>
+<li>We have bilinear terms consisting of $u_i(t)x_j(t)$s</li>
+<li>We have no linear input terms consisting only of $u_i(t)$s</li>
+<li>We have quadratic input terms consisting of $u_i(t)u_j(t)$s.</li>
+</ul>
+<p>This almost looks like a bilinear control system.</p>
+<h2 id="bilinear-control-systems">Bilinear control systems</h2>
+<p>[Pedentry warning] Why do mathematicians care so much about polynomial equations in the space of all ways of writing down algebraic functions? One answer: no matter how many ways you can permute a set of $*$&rsquo;s and $+$&rsquo;s you can always distribute and move around terms until you get the canonical form $a_nx^n + \dots + a_1x + a_0$ so might as well just study that canonical form.</p>
+<p>In the same way, when you&rsquo;re given difference equations consisting of additions and multiplications, you want to try and write down everything to get it into some polynomial form as we did above. To my own brain, this helped de-mystify a bit what &ldquo;selective&rdquo; state space models are: difference equations with bilinear terms and quadratic-in-input terms.</p>
+<p>One reason for trying to write it down this way is because in control theory there&rsquo;s a whole field of study called <a href="https://link.springer.com/book/10.1023/b101451">bilinear control systems</a>, i.e. systems of the form (resetting notational workspace again):</p>
+<p>\begin{align}
+x(t+1) &amp;= Ax(t) + Bu(t) + \sum_{i=1}^mN_ix(t)u_i(t) \
+\end{align}</p>
+<p>So our Mamba SSM is almost a bilinear SSM but not quite since it includes quadratic input terms.</p>
+<p>Of course we can just call our inputs $u_i(t)u_j(t)$ for all $i,j$ and then the system is indeed linear in this set of inputs, thus matches exactly the form for a bilinear control system.</p>
+<h2 id="continuous-time-discrete-time">Continuous time, discrete time</h2>
+<p>We fibbed a bit. In the Mamba paper they:</p>
+<ul>
+<li>Use an additional input-dependent $\Delta(t)$ and a fixed $A$.</li>
+<li>The dynamics term is modeled as $x(t+1) = \operatorname{exp}(\Delta A)x(t) + \dots$. So they indirectly modify $A$ but this is just a slightly different parameterization from what we did.</li>
+<li>The main difference is the nonlinear $\operatorname{exp}$. So instead of coefficients for $x_1(t)$ (in our example) looking like $p_{1,1}u_1(t) + p_{1,2}u_2(t)$ they will be exponentiated first.</li>
+<li>The Mamba $B(t)$ is almost the same as what we did above, but is additionally multiplied (<a href="https://github.com/johnma2006/mamba-minimal/blob/master/model.py#L310">einsum&rsquo;d appropriately</a>) by the $\Delta(t)$. So it introduces an <em>additional</em> input-dependent multiplication. We thus get terms that are then <em>cubic</em> in the inputs.</li>
+</ul>
+<p>But it&rsquo;s worth noting that in general for a system $x(t+1) = Ax(t)$ it is probably better to learn $x(t+1) = \operatorname{expm}(A)x(t)$. The gradients are likely much better behaved. This is seen elswhere in deep learning, optimize in the log space. The matrix exponent moves the roomy <a href="https://en.wikipedia.org/wiki/Laplace_transform">$S$-plane</a> into the crowded <a href="https://en.wikipedia.org/wiki/Z-plane">$Z$-plane</a>. So the $\operatorname{exp}$ is probably doing good work in stabilizing learning regardless of the interpretation as a discretization step.</p>
+<h2 id="takeaway">Takeaway</h2>
+<p>If we ignore the $\operatorname{exp}$ then we can rewrite the selective SSM as a bilinear control system consisting only of $u_i(t)x_j(t)$ terms and $u_i(t)u_j(t)$ input terms. Given the rich literature on bilinear constrol systems there may be some useful connections to explore.</p>
+<h2 id="references">References</h2>
+<p>[1] Elliott, David LeRoy. Bilinear control systems: matrices in action. Vol. 169. Dordrecht: Springer, 2009.</p>
+<p>[2] Gu, Albert, and Tri Dao. &ldquo;Mamba: Linear-time sequence modeling with selective state spaces.&rdquo; arXiv preprint arXiv:2312.00752 (2023).</p>
+<p><a href="/">Back</a></p>
+
+    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            renderMathInElement(document.body, {
+                delimiters: [
+                    {left: "$$", right: "$$", display: true},
+                    {left: "$", right: "$", display: false}
+                ]
+            });
+        });
+    </script>
+</body>
+</html>
