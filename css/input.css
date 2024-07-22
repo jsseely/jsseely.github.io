@@ -10,13 +10,13 @@
     @apply text-lg mb-4;
   }
   p {
-    @apply text-base mb-10;
+    @apply text-base mb-10 pl-5;
   }
   ul {
     @apply list-decimal list-inside;
   }
   li {
-    @apply mb-1;
+    @apply mb-1 pl-5;
   }
   p a, ul a {
     @apply text-cyan-600 hover:text-pink-600 hover:bg-pink-50;
