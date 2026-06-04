@@ -1,2 +1,5 @@
 # jsseely.github.io
-My personal site
+
+Personal site, served at [jsseely.com](https://jsseely.com) via GitHub Pages.
+
+No build step — edit `index.html` / `style.css`, commit, push.
