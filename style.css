@@ -115,12 +115,12 @@ li {
     white-space: nowrap;
 }
 
-/* Dated history. Wider gutter than Papers, since these are ranges,
-   and tighter rows, since each entry is a single line. */
+/* History, unmarked. Drops the marker-gutter grid entirely — these are
+   just stacked lines, no bullet, no indent. */
 
-.dates li {
-    grid-template-columns: 5.5rem 1fr;
-    margin-bottom: 0.5rem;
+.plain li {
+    display: block;
+    margin-bottom: 0.45rem;
 }
 
 .more {
