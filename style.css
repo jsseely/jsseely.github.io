@@ -115,12 +115,17 @@ li {
     white-space: nowrap;
 }
 
-/* History, unmarked. Drops the marker-gutter grid entirely — these are
-   just stacked lines, no bullet, no indent. */
+/* History. Same marker-gutter grid the other lists use, at en-dash width,
+   so wrapped lines hang under the text rather than under the dash. */
 
 .plain li {
-    display: block;
-    margin-bottom: 0.45rem;
+    grid-template-columns: 1.1rem 1fr;
+    margin-bottom: 0.4rem;
+}
+
+.plain li::before {
+    content: "\2013";
+    color: var(--muted);
 }
 
 .more {
