@@ -28,30 +28,17 @@
     unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
-/* Palette: cool paper, cobalt accent. Dark follows the system. */
+/* Palette: dark only — cool ink, cobalt accent. */
 
 :root {
-    color-scheme: light;
-    --bg: #fbfbfc;
-    --ink: #1b1c1e;
-    --muted: #82848c;
-    --link: #2a52be;
-    --link-hover: #1d3f9c;
-    --link-soft: rgba(42, 82, 190, 0.38);
-    --sel: rgba(42, 82, 190, 0.13);
-}
-
-@media (prefers-color-scheme: dark) {
-    :root {
-        color-scheme: dark;
-        --bg: #131418;
-        --ink: #d5d6da;
-        --muted: #7e8088;
-        --link: #8fb0f0;
-        --link-hover: #b2c8f5;
-        --link-soft: rgba(143, 176, 240, 0.42);
-        --sel: rgba(143, 176, 240, 0.2);
-    }
+    color-scheme: dark;
+    --bg: #131418;
+    --ink: #d5d6da;
+    --muted: #7e8088;
+    --link: #8fb0f0;
+    --link-hover: #b2c8f5;
+    --link-soft: rgba(143, 176, 240, 0.42);
+    --sel: rgba(143, 176, 240, 0.2);
 }
 
 * {
@@ -117,7 +104,7 @@ ul {
 li {
     display: grid;
     grid-template-columns: 3.5rem 1fr;
-    margin-bottom: 0.4rem;
+    margin-bottom: 1rem;
 }
 
 .year {
@@ -125,6 +112,59 @@ li {
     font-variant-numeric: tabular-nums lining-nums;
     font-size: 0.92em;
     padding-top: 0.05em;
+    white-space: nowrap;
+}
+
+/* Dated history. Wider gutter than Papers, since these are ranges,
+   and tighter rows, since each entry is a single line. */
+
+.dates li {
+    grid-template-columns: 5.5rem 1fr;
+    margin-bottom: 0.5rem;
+}
+
+.more {
+    margin-top: 0.4rem;
+}
+
+/* Resource links. Brackets carry the affordance the underline carries
+   elsewhere, tinted with the same --link-soft, so blue always means
+   "clickable" and the row stays quiet enough to repeat. */
+
+.refs {
+    grid-column: 2;
+    font-family: "Instrument Sans", system-ui, sans-serif;
+    font-size: 0.75rem;
+    font-weight: 600;
+    line-height: 1.4;
+    margin-top: 0.18rem;
+}
+
+.refs a {
+    color: var(--muted);
+    text-decoration: none;
+    margin-right: 0.55em;
+}
+
+.refs a::before {
+    content: "[";
+    color: var(--link-soft);
+    margin-right: 0.12em;
+}
+
+.refs a::after {
+    content: "]";
+    color: var(--link-soft);
+    margin-left: 0.12em;
+}
+
+.refs a:hover {
+    color: var(--link-hover);
+}
+
+.refs a:hover::before,
+.refs a:hover::after {
+    color: var(--link);
 }
 
 a {
@@ -137,14 +177,8 @@ a {
 }
 
 a:hover {
-    color: var(--link);
+    color: var(--link-hover);
     text-decoration-color: currentColor;
-}
-
-@media (prefers-color-scheme: dark) {
-    a:hover {
-        color: var(--link-hover);
-    }
 }
 
 a:focus-visible {
