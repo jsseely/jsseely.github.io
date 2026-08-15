@@ -167,6 +167,13 @@ li {
     color: var(--link);
 }
 
+/* Paper titles ripple violet on hover (see the script in index.html).
+   Keeps the underline in step with the text. */
+
+.papers > li > a:hover {
+    text-decoration-color: #af87ff;
+}
+
 a {
     color: inherit;
     text-decoration: underline;

@@ -45,7 +45,7 @@
         <section>
             <h2>Papers</h2>
             <p>Recent papers worth reading:</p>
-            <ul>
+            <ul class="papers">
                 <li>
                     <span class="year">2026</span>
                     <a href="https://arxiv.org/abs/2605.31022">Augmented Lagrangian Predictive Coding</a>
@@ -58,8 +58,8 @@
                     <a href="https://arxiv.org/abs/2605.31005">Learning Multi-Agent Coordination via Sheaf-ADMM</a>
                     <span class="refs">
                         <a href="https://arxiv.org/abs/2605.31005">arXiv</a>
-                        <a href="https://pub.sakana.ai/sheaf-admm/">blog</a>
                         <a href="https://github.com/SakanaAI/sheaf-admm">GitHub</a>
+                        <a href="https://pub.sakana.ai/sheaf-admm/">blog</a>
                     </span>
                 </li>
                 <li>
@@ -82,5 +82,25 @@
             <p class="links"><a href="https://twitter.com/jeffreyseely">Twitter</a> · <a href="https://github.com/jsseely">GitHub</a> · <a href="https://scholar.google.com/citations?user=hnTDmigAAAAJ">Scholar</a> · <a href="https://www.linkedin.com/in/jeffrey-seely-44a5b426">LinkedIn</a></p>
         </section>
     </main>
+
+    <!-- violet ripple on paper titles — delete this block to remove -->
+    <script>
+        if (!matchMedia('(prefers-reduced-motion: reduce)').matches)
+        document.querySelectorAll('.papers > li > a').forEach(a => {
+            const s = [...a.textContent].map(c =>
+                Object.assign(document.createElement('span'), { textContent: c }));
+            a.replaceChildren(...s);
+            let r;
+            a.onpointerenter = () => {
+                const t0 = performance.now(), n = s.length + 20;
+                (function tick(t) {
+                    const g = -10 + Math.floor((t - t0) / 50) % n;
+                    s.forEach((x, i) => x.style.color = Math.abs(i - g) <= 1 ? '#d0b4ff' : '#af87ff');
+                    r = requestAnimationFrame(tick);
+                })(t0);
+            };
+            a.onpointerleave = () => { cancelAnimationFrame(r); s.forEach(x => x.style.color = ''); };
+        });
+    </script>
 </body>
 </html>
