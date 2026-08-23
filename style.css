@@ -82,8 +82,27 @@ h1 {
     font-weight: 500;
 }
 
+/* Subpage back link. Sans and uppercase, so it reads as chrome rather
+   than content, and sits above the page's own h1. */
+
+.back {
+    font-family: "Instrument Sans", system-ui, sans-serif;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    display: inline-block;
+    margin-bottom: 0.9rem;
+}
+
+.back:hover {
+    color: var(--link-hover);
+}
+
 section {
-    margin-bottom: 2.6rem;
+    margin-bottom: 4rem;
 }
 
 h2 {
@@ -104,7 +123,7 @@ ul {
 li {
     display: grid;
     grid-template-columns: 3.5rem 1fr;
-    margin-bottom: 1rem;
+    margin-bottom: 1.15rem;
 }
 
 .year {
@@ -115,21 +134,38 @@ li {
     white-space: nowrap;
 }
 
-/* History. Same marker-gutter grid the other lists use, at en-dash width,
-   so wrapped lines hang under the text rather than under the dash. */
+/* History, unmarked. Drops the marker-gutter grid the other lists use —
+   these are plain stacked lines, flush with the prose above them. */
 
 .plain li {
-    grid-template-columns: 1.1rem 1fr;
-    margin-bottom: 0.4rem;
-}
-
-.plain li::before {
-    content: "\2013";
-    color: var(--muted);
+    display: block;
+    margin-bottom: 0.45rem;
 }
 
 .more {
     margin-top: 0.4rem;
+}
+
+/* Authors and venue. Sits between the title and the resource links.
+   On the home page the <span class="me"> is left unstyled; the full list
+   lifts it halfway to --ink (L* 69.6, the perceptual midpoint) so the eye
+   can find him down a long list without the name shouting. */
+
+.meta {
+    grid-column: 2;
+    color: var(--muted);
+    font-size: 0.9em;
+    line-height: 1.45;
+    margin-top: 0.1rem;
+}
+
+.meta .sep {
+    opacity: 0.6;
+    margin: 0 0.35em;
+}
+
+body.list .meta .me {
+    color: #a8aab0;
 }
 
 /* Resource links. Brackets carry the affordance the underline carries

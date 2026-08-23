@@ -45,6 +45,7 @@
                 <li>
                     <span class="year">2026</span>
                     <a href="https://arxiv.org/abs/2605.31022">Augmented Lagrangian Predictive Coding</a>
+                    <span class="meta"><span class="me">Jeffrey Seely</span>, Julian Gould<span class="sep">&middot;</span>preprint</span>
                     <span class="refs">
                         <a href="https://arxiv.org/abs/2605.31022">arXiv</a>
                     </span>
@@ -52,22 +53,24 @@
                 <li>
                     <span class="year">2026</span>
                     <a href="https://arxiv.org/abs/2605.31005">Learning Multi-Agent Coordination via Sheaf-ADMM</a>
+                    <span class="meta"><span class="me">Jeffrey Seely</span>, Bartłomiej Cupiał, Llion Jones<span class="sep">&middot;</span>ICML 2026</span>
                     <span class="refs">
                         <a href="https://arxiv.org/abs/2605.31005">arXiv</a>
                         <a href="https://github.com/SakanaAI/sheaf-admm">GitHub</a>
-                        <a href="https://pub.sakana.ai/sheaf-admm/">blog</a>
+                        <a href="https://pub.sakana.ai/sheaf-admm/">Sakana AI blog</a>
                     </span>
                 </li>
                 <li>
                     <span class="year">2025</span>
                     <a href="https://arxiv.org/abs/2511.11092">Sheaf Cohomology of Linear Predictive Coding Networks</a>
+                    <span class="meta"><span class="me">Jeffrey Seely</span><span class="sep">&middot;</span>NeurReps @ NeurIPS 2025</span>
                     <span class="refs">
                         <a href="https://arxiv.org/abs/2511.11092">arXiv</a>
                         <a href="https://github.com/jsseely/sheaf-pc">GitHub</a>
                     </span>
                 </li>
             </ul>
-            <p class="more">Full publication list at <a href="https://scholar.google.com/citations?user=hnTDmigAAAAJ">Google Scholar</a>.</p>
+            <p class="more"><a href="/publications">Full publication list</a>.</p>
         </section>
         <section>
             <h2>Contact</h2>
@@ -79,24 +82,6 @@
         </section>
     </main>
 
-    <!-- violet ripple on paper titles — delete this block to remove -->
-    <script>
-        if (!matchMedia('(prefers-reduced-motion: reduce)').matches)
-        document.querySelectorAll('.papers > li > a').forEach(a => {
-            const s = [...a.textContent].map(c =>
-                Object.assign(document.createElement('span'), { textContent: c }));
-            a.replaceChildren(...s);
-            let r;
-            a.onpointerenter = () => {
-                const t0 = performance.now(), n = s.length + 20;
-                (function tick(t) {
-                    const g = -10 + Math.floor((t - t0) / 50) % n;
-                    s.forEach((x, i) => x.style.color = Math.abs(i - g) <= 1 ? '#d0b4ff' : '#af87ff');
-                    r = requestAnimationFrame(tick);
-                })(t0);
-            };
-            a.onpointerleave = () => { cancelAnimationFrame(r); s.forEach(x => x.style.color = ''); };
-        });
-    </script>
+    <script src="/ripple.js" defer></script>
 </body>
 </html>
